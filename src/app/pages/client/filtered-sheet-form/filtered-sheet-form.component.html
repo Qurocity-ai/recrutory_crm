@@ -1,0 +1,311 @@
+<link href="
+https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+<div class="dialog-box">
+  <mat-dialog-actions class="dialogAction">
+    <button mat-icon-button class="close-button" [mat-dialog-close]="true">
+      <mat-icon class="close-icon" color="warn">close</mat-icon>
+    </button>
+  </mat-dialog-actions>
+  <h1>Leads Form</h1>
+  <div mat-dialog-content>
+    <form [formGroup]="leadForm" (ngSubmit)="submitLead()">
+
+      <div class="row">
+        <!-- First Name -->
+        <mat-form-field appearance="outline" class="input">
+          <mat-label>First Name</mat-label>
+          <input matInput placeholder="Suhas" required formControlName="name" />
+        </mat-form-field>
+
+        <!-- Email -->
+        <mat-form-field appearance="outline" class="input">
+          <mat-label>Email</mat-label>
+          <input matInput placeholder="abc@gmail.com" formControlName="email" />
+        </mat-form-field>
+
+      </div>
+
+      <div class="row">
+
+        <!-- Phone -->
+        <mat-form-field appearance="outline" class="input">
+          <mat-label>Mobile No</mat-label>
+          <input matInput placeholder="98XXXXXXXX.." required formControlName="phone" />
+        </mat-form-field>
+
+        <!-- jobStatus -->
+        <mat-form-field appearance="outline" class="input">
+          <mat-label>Job Status</mat-label>
+          <mat-select formControlName="jbStatus">
+            <mat-option value="Working">Working</mat-option>
+            <mat-option value="Job Seeking">Job Seeking</mat-option>
+            <mat-option value="Teacher">Teacher</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+      </div>
+
+      <!-- <mat-form-field appearance="outline" class="input">
+          <mat-label>Lead Status</mat-label>
+          <mat-select
+            placeholder="Interested.."
+            required
+            formControlName="status"
+          >
+            <mat-option value="Interested">Interested</mat-option>
+            <mat-option value="AMCAT">AMCAT</mat-option>
+            <mat-option value="Language Profiency Test"
+              >Language Profiency Test</mat-option
+            >
+            <mat-option value="Client Round">Client Round</mat-option>
+            <mat-option value="HR Round">HR Round</mat-option>
+            <mat-option value="Final Round">Final Round</mat-option>
+            <mat-option value="Selected">Selected</mat-option>
+            <mat-option value="Operational Round">Operational Round</mat-option>
+          </mat-select>
+        </mat-form-field> -->
+
+
+
+
+        <div formArrayName="language">
+          <div *ngFor="let languageGroup of languages.controls; let i = index" [formGroupName]="i">
+            <div class="row">
+              <!-- Language Type -->
+              <mat-form-field appearance="outline" class="adjustThree">
+                <mat-label>Language Type</mat-label>
+                <mat-select placeholder="Foreign, Regional.." formControlName="lType">
+                  <mat-option value="Foreign">Foreign</mat-option>
+                  <mat-option value="Regional">Regional</mat-option>
+                </mat-select>
+              </mat-form-field>
+        
+              <!-- Languages -->
+              <mat-form-field appearance="outline" class="adjustThree">
+                <mat-label>Languages</mat-label>
+                <mat-select formControlName="lang">
+                  <mat-option 
+                    *ngFor="let option of (languageGroup.get('filteredLanguages')?.value || [])" 
+                    [value]="option">
+                    {{ option }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              
+              
+        
+              <!-- Proficiency Level -->
+              <mat-form-field appearance="outline" class="adjustThree">
+                <mat-label>Proficiency</mat-label>
+                <mat-select formControlName="proficiencyLevel">
+                  <mat-option *ngFor="let level of proficiencyLevels" [value]="level">{{ level }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+        
+              <!-- Add button (only for the first set) -->
+              <button *ngIf="i === 0" type="button" mat-raised-button color="primary" (click)="addLanguage()">+</button>
+        
+              <!-- Delete button (for all sets except the first one) -->
+              <button *ngIf="i > 0" type="button" mat-raised-button color="warn" (click)="removeLanguage(i)">-</button>
+            </div>
+          </div>
+        </div>
+        
+
+      <div class="row">
+        <!-- qualification -->
+        <mat-form-field appearance="outline" class="input">
+          <mat-label>Qualification</mat-label>
+          <mat-select formControlName="qualification">
+            <mat-option value="SSC">SSC</mat-option>
+            <mat-option value="HSC">HSC</mat-option>
+            <mat-option value="Diploma">Diploma</mat-option>
+            <mat-option value="Advanced Diploma">Advanced Diploma</mat-option>
+            <mat-option value="Under Graduate">Under Graduate</mat-option>
+            <mat-option value="Graduate">Graduate</mat-option>
+            <mat-option value="Post Graduate">Post Graduate</mat-option>
+            <mat-option value="PHD">PHD</mat-option>
+            <mat-option value="BA (Langauge)">BA Language</mat-option>
+            <mat-option value="MA (Language)">MA Language</mat-option>
+            <!-- <mat-option value="Professional Certificate"
+              >Professional Certificate</mat-option
+            >
+            <mat-option value="Vocational Training"
+              >Vocational Training</mat-option
+            > -->
+            <mat-option value="Vocational Training">Other</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- industry -->
+        <mat-form-field appearance="outline" class="input">
+          <mat-label>Industry</mat-label>
+          <input matInput placeholder="Software.." formControlName="industry" />
+        </mat-form-field>
+      </div>
+
+      <div class="row">
+        <!-- domain -->
+        <mat-form-field appearance="outline" class="input">
+          <mat-label>Domain</mat-label>
+          <input matInput placeholder="Development.." formControlName="domain" />
+        </mat-form-field>
+
+        <!-- experience -->
+        <mat-form-field appearance="outline" class="input">
+          <mat-label>Experience</mat-label>
+          <input matInput placeholder="in Years.." formControlName="exp" />
+        </mat-form-field>
+
+      </div>
+
+      <div class="row">
+
+        <!-- current location -->
+        <mat-form-field appearance="outline" class="input">
+          <mat-label>Current Location</mat-label>
+          <input matInput placeholder="Pune.."  formControlName="cLocation" />
+        </mat-form-field>
+
+        <!-- preferred location -->
+        <mat-form-field appearance="outline" class="input">
+          <mat-label>Preferred Location</mat-label>
+          <input matInput placeholder="Mumbai.."  formControlName="pLocation" />
+        </mat-form-field>
+
+      </div>
+
+      <div class="row">
+
+        <!-- currentCTC -->
+        <mat-form-field appearance="outline" class="input">
+          <mat-label>Current CTC</mat-label>
+          <input matInput placeholder="in lakhs.."  formControlName="currentCTC" />
+        </mat-form-field>
+
+        <!-- expectedCTC -->
+        <mat-form-field appearance="outline" class="input">
+          <mat-label>Expected CTC</mat-label>
+          <input matInput placeholder="in lakhs.."  formControlName="expectedCTC" />
+        </mat-form-field>
+
+      </div>
+
+      <div class="row">
+
+        <!-- noticePeriod -->
+        <mat-form-field appearance="outline" class="input">
+          <mat-label>Notice Period</mat-label>
+          <mat-select formControlName="noticePeriod">
+            <mat-option value="Immediate">Immediate</mat-option>
+            <mat-option value="15 Days">15 Days</mat-option>
+            <mat-option value="1 Month">1 Month</mat-option>
+            <mat-option value="2 Months">2 Months</mat-option>
+            <mat-option value="3 Months">3 Months</mat-option>
+            <mat-option value="3+ Months">3+ Months</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Mode -->
+        <mat-form-field appearance="outline" class="input">
+          <mat-label>Mode</mat-label>
+          <mat-select placeholder="wfh.."  formControlName="wfh">
+            <mat-option value="WFH">WFH</mat-option>
+            <mat-option value="WFO">WFO</mat-option>
+            <mat-option value="Hybrid">Hybrid</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+      </div>
+
+      <div class="row">
+
+        <!-- resumeLink -->
+        <mat-form-field appearance="outline" class="input">
+          <mat-label>Resume</mat-label>
+          <input matInput placeholder="resume.."  formControlName="resumeLink" />
+        </mat-form-field>
+
+        <!-- linkedinLink -->
+        <mat-form-field appearance="outline" class="input">
+          <mat-label>Linkedin Profile</mat-label>
+          <input matInput placeholder="linkedin.."  formControlName="linkedinLink" />
+        </mat-form-field>
+
+
+      </div>
+
+      <!-- feedback -->
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Feedback</mat-label>
+        <mat-select formControlName="feedback">
+          <mat-option value="Interested">Interested</mat-option>
+          <mat-option value="NI - CTC Not Matching">NI - CTC Not Matching</mat-option>
+          <mat-option value="NI - Relocation Issue">NI - Relocation Issue</mat-option>
+          <mat-option value="NI - Notice Period">NI - Notice Period</mat-option>
+          <mat-option value="NI - Cooling Down Period">NI - Cooling Down Period</mat-option>
+          <mat-option value="Call Not Recieved">Call Not Recieved</mat-option>
+          <mat-option value="NI - Under Qualified">NI - Under Qualified</mat-option>
+          <mat-option value="NI - already associated with an org">NI - already associated with an org</mat-option>
+          <mat-option value="Currently not looking for a job">Currently not looking for a job</mat-option>
+          <mat-option value="Rejected">Rejected</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Remark -->
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Remark</mat-label>
+        <input matInput placeholder="Detailed Remark.." formControlName="remark" />
+      </mat-form-field>
+
+      <div class="row">
+        <!-- company -->
+        <mat-form-field appearance="outline" class="input">
+          <mat-label>Organisation</mat-label>
+          <input matInput placeholder="xyz.."  formControlName="company" />
+        </mat-form-field>
+
+        <!-- voiceNonVoice -->
+        <mat-form-field appearance="outline" class="input">
+          <mat-label>Voice / NonVoice</mat-label>
+          <mat-select  formControlName="voiceNonVoice">
+            <mat-option value="Voice">Voice</mat-option>
+            <mat-option value="Non-Voice">Non-Voice</mat-option>
+            <mat-option value="Both">Both</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="row">
+        <!-- source -->
+        <mat-form-field appearance="outline" class="input">
+          <mat-label>Source</mat-label>
+          <mat-select  formControlName="source">
+            <mat-option value="Linkedin">Linkedin</mat-option>
+            <mat-option value="Naukri">Naukri</mat-option>
+            <mat-option value="Meta">Meta</mat-option>
+            <mat-option value="Google">Google</mat-option>
+            <mat-option value="Instagram">Instagram</mat-option>
+            <mat-option value="Website">Website</mat-option>
+            <mat-option value="App">App</mat-option>
+            <mat-option value="Email">Email</mat-option>
+            <mat-option value="Reference">Reference</mat-option>
+            <mat-option value="Other">Other</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+      </div>
+
+      <!-- action -->
+      <div mat-dialog-actions class="action" style="margin-top: 1rem;">
+        <button mat-raised-button type="button" [mat-dialog-close]="false">
+          Cancel
+        </button>
+        <button mat-raised-button color="primary" type="submit">
+          {{ data ? "Update" : "Create" }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

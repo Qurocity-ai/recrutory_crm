@@ -1,0 +1,195 @@
+<div class="card topp">
+  <div class="card-head">
+    <h1 style="font-weight: bold">PROCESS</h1>
+  </div>
+  <div class="card-body">
+    <div class="filterSearchBar">
+      <button style="background: #02465b; color: white; padding: 10px;margin-right: 10px;" mat-raised-button (click)="openFilterDiv()">
+        FILTER
+      </button>
+      <button style="background: #02465b; color: white; padding: 10px;margin-right: 10px; margin-bottom: 1rem;" mat-raised-button
+        (click)="openAddEditEmpForm()">
+        CREATE A NEW PROCESS
+      </button>
+      <mat-form-field >
+        <mat-label>Search</mat-label>
+        <input style="width: 200px; padding-left: 0.6rem;" matInput (keyup)="applyFilter($event)" #input />
+      </mat-form-field>
+    </div>
+
+    <div class="filters" *ngIf="openFilters">
+
+      <mat-form-field appearance="fill" class="filterDropDown">
+        <mat-label>Deadline</mat-label>
+        <input matInput [matDatepicker]="deadlinePicker" (dateChange)="applyDateFilter($event.value, 'clientProcessDeadline')" />
+        <mat-datepicker-toggle matIconSuffix [for]="deadlinePicker"></mat-datepicker-toggle>
+        <mat-datepicker #deadlinePicker>
+          <mat-datepicker-actions>
+            <button mat-button matDatepickerCancel>Cancel</button>
+            <button mat-raised-button matDatepickerApply>Apply</button>
+          </mat-datepicker-actions>
+        </mat-datepicker>
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="filterDropDown">
+        <mat-label>Joining Date</mat-label>
+        <input matInput [matDatepicker]="joiningPicker" (dateChange)="applyDateFilter($event.value, 'clientProcessJoining')" />
+        <mat-datepicker-toggle matIconSuffix [for]="joiningPicker"></mat-datepicker-toggle>
+        <mat-datepicker #joiningPicker>
+          <mat-datepicker-actions>
+            <button mat-button matDatepickerCancel>Cancel</button>
+            <button mat-raised-button matDatepickerApply>Apply</button>
+          </mat-datepicker-actions>
+        </mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="filterDropDown">
+        <mat-label>Languages</mat-label>
+        <mat-select [(value)]="selectedLanguage" (selectionChange)="applyDropdownFilter($event.value, 'clientProcessLanguage')">
+          <mat-option [value]="null">None</mat-option>
+          <mat-option *ngFor="let language of languages" [value]="language">{{ language }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="filterDropDown">
+        <mat-label>Location</mat-label>
+        <mat-select [(value)]="selectedlocation" (selectionChange)="applyDropdownFilter($event.value, 'clientProcessLocation')">
+          <mat-option [value]="null">None</mat-option>
+          <mat-option *ngFor="let location of locations" [value]="location">{{ location }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="filterDropDown">
+        <mat-label>Package (in Lakhs)</mat-label>
+        <mat-select [(value)]="selectedPackage"  (selectionChange)="applyDropdownFilter($event.value, 'clientProcessPckg')">
+          <mat-option [value]="null">None</mat-option>
+          <mat-option *ngFor="let package of packages" [value]="package">{{ package }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="filterDropDown">
+        <mat-label>Job Description</mat-label>
+        <mat-select [(value)]="selectedJd" (selectionChange)="applyDropdownFilter($event.value, 'clientProcessJobDesc')">
+          <mat-option [value]="null">None</mat-option>
+          <mat-option *ngFor="let jobDesc of jobDescs" [value]="jobDesc">{{ jobDesc
+            }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-raised-button style="background: #02465b;color: white;" (click)="clearFilters()" class="filterDropDown">Clear Filters</button>
+    </div>
+
+
+    <div class="table-container" style="overflow-x: auto; overflow-y: auto; max-height: 550px">
+      <table mat-table [dataSource]="dataSource" matSort>
+
+        <ng-container matColumnDef="SrNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header
+            style="background: #02465b;color: white; min-width: fit-content">
+            SrNo
+          </th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            {{ getSrNo(i) }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="clientProcessName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="background: #02465b;color: white;" >
+            Process Name
+          </th>
+          <td mat-cell *matCellDef="let lead" style="cursor: pointer;" (click)="openInterested(lead._id)" class="Name">{{
+            lead.clientProcessName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="clientProcessLanguage">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="background: #02465b;color: white;">
+            Language
+          </th>
+          <td mat-cell *matCellDef="let lead">{{ lead.clientProcessLanguage }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="clientProcessCandReq">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="background: #02465b;color: white;">
+            Candidates Required
+          </th>
+          <td mat-cell *matCellDef="let lead">{{ lead.clientProcessCandReq }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="clientProcessDeadline">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="background: #02465b;color: white;">
+            Deadline
+          </th>
+          <td mat-cell *matCellDef="let lead">{{ lead.clientProcessDeadline | date: 'dd/MM/yyyy' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="clientProcessPckg">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="background: #02465b;color: white;">
+            Package (in LPA)
+          </th>
+          <td mat-cell *matCellDef="let lead">{{ lead.clientProcessPckg }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="clientProcessLocation">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="background: #02465b;color: white;">
+            Location
+          </th>
+          <td mat-cell *matCellDef="let lead">{{ lead.clientProcessLocation }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="clientProcessJoining">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="background: #02465b;color: white;">
+            Joining Date
+          </th>
+          <td mat-cell *matCellDef="let lead">{{ lead.clientProcessJoining | date: 'dd/MM/yyyy' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="clientProcessPerks">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="background: #02465b;color: white;">
+            Perks
+          </th>
+          <td mat-cell *matCellDef="let lead">{{ lead.clientProcessPerks }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="clientProcessJobDesc">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="background: #02465b; color: white;">
+            Job Description
+          </th>
+          <td mat-cell *matCellDef="let lead" (click)="viewJobDesc(lead._id)" style="cursor:pointer; color: rgb(55, 55, 238);">
+            View Job Description
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="viewDetails">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="background: #02465b;color: white;">
+            POC Details
+          </th>
+          <td mat-cell *matCellDef="let lead" (click)="moreDetails(lead._id)"
+              style="cursor:pointer; color: rgb(55, 55, 238);">
+            View Details
+          </td>
+        </ng-container>
+        
+
+        <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header style="background: #02465b; color: white;">
+                Action
+              </th>
+              <td mat-cell *matCellDef="let lead">
+                <button mat-icon-button color="primary" (click)="openEditForm(lead)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+    
+                <button mat-icon-button color="warn" (click)="deleteEntry(lead._id)" *ngIf="!isLead() && !isRecruiter()">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row" *matNoDataRow >
+          <td class="mat-cell" colspan="12" style="padding: 1rem;">
+            OOOPs, No Matching Record Found ....
+          </td>
+        </tr>
+      </table>
+    </div>
+    <mat-paginator [pageSizeOptions]="[50,100,150]" showFirstLastButtons></mat-paginator>
+  </div>
+</div>
